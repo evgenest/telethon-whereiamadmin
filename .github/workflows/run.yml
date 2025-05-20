@@ -1,3 +1,9 @@
+# .github/workflows/run.yml
+name: Telethon Admin Finder
+
+on:
+  workflow_dispatch:
+
 jobs:
   find-admins:
     runs-on: ubuntu-latest
