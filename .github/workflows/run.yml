@@ -27,16 +27,17 @@ jobs:
 
       - name: Run Telethon script
         # записываем вывод в временную папку раннера, а не в корень репо
+        
+        id: run
         run: |
           OUT="$RUNNER_TEMP/admins_list.csv"
           python find_admins.py --output "$OUT"
-          echo "OUT=$OUT" >> $GITHUB_ENV
+          echo "OUT=$OUT" >> "$GITHUB_OUTPUT"
         # сохраним путь в переменной, чтобы передать дальше
-        id: run
 
       - name: Upload admins list artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: admins-list
-          path: ${{ ENV.OUT }}
+          path: ${{ steps.run.outputs.OUT }}
           retention-days: 1
