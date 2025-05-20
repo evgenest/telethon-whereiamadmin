@@ -30,12 +30,13 @@ jobs:
         run: |
           OUT="$RUNNER_TEMP/admins_list.csv"
           python find_admins.py --output "$OUT"
+          echo "OUT=$OUT" >> $GITHUB_ENV
         # сохраним путь в переменной, чтобы передать дальше
         id: run
 
       - name: Upload admins list artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: admins-list
-          path: ${{ steps.run.outputs.OUT }}
+          path: ${{ ENV.OUT }}
           retention-days: 1
