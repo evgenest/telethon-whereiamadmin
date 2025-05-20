@@ -1,7 +1,11 @@
 import os
 from telethon import TelegramClient
+from telethon.sessions import StringSession
 from telethon.tl.types import ChannelParticipantsAdmins
 from telethon.errors import ChatAdminRequiredError
+from dotenv import load_dotenv
+load_dotenv()  # подгружает переменные из .env в os.environ
+
 
 async def main():
     my_info = await client.get_me()
@@ -49,7 +53,11 @@ if __name__ == '__main__':
     api_hash = os.environ['API_HASH']
     bot_token = os.environ.get('BOT_TOKEN')
     
-    client = TelegramClient('session_name', api_id, api_hash)
+    session_str = os.environ.get('TELEGRAM_SESSION_BASE64', '')
+    if session_str:
+        client = TelegramClient(StringSession(session_str), api_id, api_hash)
+    else:
+        client = TelegramClient('session_name', api_id, api_hash)
     
     # Если задан BOT_TOKEN, используем его для автоматической авторизации без ввода
     if bot_token:

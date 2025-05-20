@@ -12,6 +12,7 @@ jobs:
       API_ID:   ${{ secrets.API_ID }}
       API_HASH: ${{ secrets.API_HASH }}
       BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+      TELEGRAM_SESSION_BASE64: ${{ secrets.TELEGRAM_SESSION_BASE64 }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -23,5 +24,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+      - name: Restore Telethon session file
+        run: |
+          echo "${{ secrets.TELEGRAM_SESSION_BASE64 }}" | base64 --decode > session_name.session.gz
+          gunzip session_name.session.gz
       - name: Run Telethon script
         run: python find_admins.py
