@@ -9,9 +9,8 @@ jobs:
     environment: production
     runs-on: ubuntu-latest
     env:
-      API_ID:   ${{ secrets.API_ID }}
+      API_ID: ${{ secrets.API_ID }}
       API_HASH: ${{ secrets.API_HASH }}
-      BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
       TELEGRAM_SESSION_BASE64: ${{ secrets.TELEGRAM_SESSION_BASE64 }}
     steps:
       - name: Checkout repository

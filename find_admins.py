@@ -4,8 +4,8 @@ from telethon.sessions import StringSession
 from telethon.tl.types import ChannelParticipantsAdmins
 from telethon.errors import ChatAdminRequiredError
 from dotenv import load_dotenv
-load_dotenv()  # подгружает переменные из .env в os.environ
 
+load_dotenv()  # подгружает переменные из .env в os.environ
 
 async def main():
     my_info = await client.get_me()
@@ -36,7 +36,6 @@ async def main():
                 link = "Не удалось получить ссылку"
             
             admin_dialogs.append((dialog.title, chat_type, link))
-            # Выводим промежуточное сообщение
             print(f"{dialog.title} — вы админ")
     
     # Выводим итоговый список
@@ -48,21 +47,18 @@ async def main():
         print("\nВы не найдены как администратор ни в одном чате.")
 
 if __name__ == '__main__':
-    # Считываем переменные окружения; API_ID приходит как строка – приводим к int
+    # Считываем переменные окружения; API_ID приходит как строка — приводим к int
     api_id = int(os.environ['API_ID'])
     api_hash = os.environ['API_HASH']
-    bot_token = os.environ.get('BOT_TOKEN')
     
+    # Если есть сохранённая строковая сессия, используем её. Иначе – файловая сессия.
     session_str = os.environ.get('TELEGRAM_SESSION_BASE64', '')
     if session_str:
         client = TelegramClient(StringSession(session_str), api_id, api_hash)
     else:
         client = TelegramClient('session_name', api_id, api_hash)
     
-    # Если задан BOT_TOKEN, используем его для автоматической авторизации без ввода
-    if bot_token:
-        client.start(bot_token=bot_token)
-    else:
-        client.start()
+    # Запускаем авторизацию. Если сессия новая, авторизация пройдёт интерактивно.
+    client.start()
     
     client.loop.run_until_complete(main())
