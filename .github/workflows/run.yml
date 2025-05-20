@@ -1,21 +1,21 @@
+# .github/workflows/run.yml
 name: Telethon Admin Finder
 
-# Запуск вручную
 on:
-  workflow_dispatch:
+  workflow_dispatch:          # ручной запуск
 
 jobs:
   find-admins:
     runs-on: ubuntu-latest
     env:
-      # Секреты, добавленные в Settings → Secrets → Actions
       API_ID:   ${{ secrets.API_ID }}
       API_HASH: ${{ secrets.API_HASH }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Python
+      - name: Setup Python 3.8
         uses: actions/setup-python@v4
         with:
           python-version: '3.8'
@@ -26,11 +26,16 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Telethon script
-        # Здесь можно добавить любые опции: --output, --verbose и т.п.
-        run: python find_admins.py --output admins_list.csv
+        # записываем вывод в временную папку раннера, а не в корень репо
+        run: |
+          OUT="$RUNNER_TEMP/admins_list.csv"
+          python find_admins.py --output "$OUT"
+        # сохраним путь в переменной, чтобы передать дальше
+        id: run
 
-      - name: Upload admins list
-        uses: actions/upload-artifact@v3
+      - name: Upload admins list artifact
+        uses: actions/upload-artifact@v2
         with:
           name: admins-list
-          path: admins_list.csv
+          path: ${{ steps.run.outputs.OUT }}
+          retention-days: 1
